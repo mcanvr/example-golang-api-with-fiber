@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Documentation - Swagger UI</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css"
+    />
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+    <script>
+      // Extract the origin (protocol + hostname + port) from the current URL
+      // This makes the Swagger UI work correctly regardless of deployment location
+      const baseUrl = window.location.origin;
+
+      // Initialize Swagger UI with configuration settings
+      window.onload = function () {
+        window.ui = SwaggerUIBundle({
+          // Dynamically build the path to the Swagger JSON file
+          // This allows the UI to work in different environments without reconfiguration
+          url: baseUrl + "/api/swagger.json",
+          dom_id: "#swagger-ui",
+          deepLinking: true, // Enables deep linking for better navigation
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIBundle.SwaggerUIStandalonePreset,
+          ],
+          layout: "BaseLayout",
+          docExpansion: "list", // Start with operations collapsed
+          defaultModelsExpandDepth: 1, // Limit initial model expansion
+          defaultModelExpandDepth: 1, // Limit initial model property expansion
+          displayRequestDuration: true, // Show timing information for requests
+          filter: true, // Enable filtering operations by tag or text
+          syntaxHighlight: {
+            activated: true,
+            theme: "agate", // Syntax highlighting theme
+          },
+          // Enable persistent authorization to maintain JWT token between page refreshes
+          persistAuthorization: true,
+          // Custom request interceptor to ensure proper Bearer token format
+          // Automatically adds the "Bearer " prefix if missing from the Authorization header
+          requestInterceptor: function (request) {
+            console.log("Request URL:", request.url);
+
+            // Check and format the Authorization header for proper JWT format
+            const auth = request.headers.Authorization;
+            if (auth && !auth.startsWith("Bearer ")) {
+              request.headers.Authorization = "Bearer " + auth;
+            }
+
+            return request;
+          },
+        });
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+# Air configuration file for hot-reload during development
+# This allows for automatic rebuilding when source files change
+root = "."
+tmp_dir = "tmp"
+
+[build]
+# File extensions to watch for changes (only these will trigger rebuilds)
+include_ext = ["go", "tpl", "tmpl", "html"]
+# Directories and files to ignore during watching
+exclude_dir = ["assets", "tmp", "vendor", ".git"]
+# Command to execute when changes are detected
+cmd = "go build -o ./tmp/main ./cmd/api/"
+# Binary to run after successful build
+full_bin = "./tmp/main"
+# Interval to check for file changes (in milliseconds)
+delay = 1000
+
+[log]
+# Controls whether timestamps are displayed in logs
+# Set to false to disable timestamp display
+time = true
+
+[color]
+# Terminal color configuration for visual distinction
+main = "magenta"    # Main application logs
+watcher = "cyan"    # File watcher messages
+build = "yellow"    # Build process messages
+runner = "green"    # Application execution messages 

@@ -1,0 +1,54 @@
+# .gitignore file for Go
+
+# Build outputs and binaries
+/bin/
+/tmp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Dependency directories
+/vendor/
+
+# Go module cache
+*.sum
+
+# Test cache
+*.test
+*.tmp
+
+# Code coverage tool outputs
+*.out
+*.prof
+*.cov
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files for Air hot reload tool
+/tmp/
+/tmp/build-errors.log
+/tmp/main
+
+# Environment variables and configuration files (environment-specific)
+.env
+.env.local
+
+# Log files
+*.log
+
+# Docker
+.docker/
+
+# Custom application files and folders
+/config.local.yaml
+/config.local.json

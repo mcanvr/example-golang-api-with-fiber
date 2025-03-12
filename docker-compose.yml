@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: golang-fiber-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_ADDRESS=:8080
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+      - JWT_SECRET=change_this_to_a_secure_secret_in_production
+      - JWT_EXPIRATION_HOURS=24
+    restart: unless-stopped
+    volumes:
+      - ./docs:/docs
+      - ./static:/static
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/swagger",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge

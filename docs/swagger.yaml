@@ -1,0 +1,327 @@
+basePath: /api/v1
+definitions:
+  internal_interfaces_api.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  internal_interfaces_api.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  internal_interfaces_api.ResponseModel:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  mcanvr_example-golang-api-with-fiber_internal_application_dto.UserRequest:
+    properties:
+      age:
+        description: Age range validation
+        maximum: 120
+        minimum: 0
+        type: integer
+      email:
+        description: Email with format validation
+        type: string
+      name:
+        description: Name with minimum length validation
+        minLength: 2
+        type: string
+    required:
+    - email
+    - name
+    type: object
+  mcanvr_example-golang-api-with-fiber_internal_application_dto.UserResponse:
+    properties:
+      age:
+        description: User's age
+        type: integer
+      email:
+        description: User's email address
+        type: string
+      id:
+        description: User's unique identifier
+        type: integer
+      name:
+        description: User's full name
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+  description: This is an example REST API project using Domain-Driven Design principles
+    with Fiber framework
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Example Fiber API with DDD
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates with username and password to receive a JWT token
+      parameters:
+      - description: User credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/internal_interfaces_api.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+            - properties:
+                data:
+                  $ref: '#/definitions/internal_interfaces_api.LoginResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+      summary: User login
+      tags:
+      - auth
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all users in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/mcanvr_example-golang-api-with-fiber_internal_application_dto.UserResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+      security:
+      - BearerAuth: []
+      summary: List all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user record
+      parameters:
+      - description: User information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/mcanvr_example-golang-api-with-fiber_internal_application_dto.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+            - properties:
+                data:
+                  $ref: '#/definitions/mcanvr_example-golang-api-with-fiber_internal_application_dto.UserResponse'
+              type: object
+        "400":
+          description: Invalid request or user already exists
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+      security:
+      - BearerAuth: []
+      summary: Create new user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "400":
+          description: Invalid ID format
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+      security:
+      - BearerAuth: []
+      summary: Delete user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+            - properties:
+                data:
+                  $ref: '#/definitions/mcanvr_example-golang-api-with-fiber_internal_application_dto.UserResponse'
+              type: object
+        "400":
+          description: Invalid ID format
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+      security:
+      - BearerAuth: []
+      summary: Show user details
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Updates a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated user information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/mcanvr_example-golang-api-with-fiber_internal_application_dto.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+            - properties:
+                data:
+                  $ref: '#/definitions/mcanvr_example-golang-api-with-fiber_internal_application_dto.UserResponse'
+              type: object
+        "400":
+          description: Invalid request or email already used
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/internal_interfaces_api.ResponseModel'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - users
+schemes:
+- http
+- https
+security:
+- BearerAuth: []
+securityDefinitions:
+  BearerAuth:
+    description: 'JWT Authorization header using the Bearer scheme. Example: "Bearer
+      {token}"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
